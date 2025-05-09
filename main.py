@@ -1,16 +1,91 @@
-# This is a sample Python script.
+#HANGMAN GAME
+import random
+from wordslist import words
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#dictionary of key:()
+hangman_art = {0:("┌ ─ ┐  ",
+                  "|      ",
+                  "|      ",
+                  "|      "),
+               1:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|      ",
+                  "|      "),
+               2:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|   |  ",
+                  "|      "),
+               3:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|  /|  ",
+                  "|      "),
+               4:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|  /|\\",
+                  "|      "),
+               5:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|  /|\\",
+                  "|  /   "),
+               6:("┌ ─ ┐  ",
+                  "|   o  ",
+                  "|  /|\\",
+                  "|  / \\"),
+               }
+
+def display_man(wrong_guesses):
+    for line in hangman_art[wrong_guesses]:
+        print(line)
+
+def display_hint(hint):
+    print(" ".join(hint))
+
+def display_answer(answer):
+    print(" ".join(answer))
+
+def main():
+    answer = random.choice(words).lower()
+    hint = ["_"] * len(answer)
+    wrong_guesses = 0
+    guessed_letters = set()
+    is_running = True
+
+    while is_running:
+        display_man(wrong_guesses)
+        display_hint(hint)
+        guess = input("Guess a letter: ").lower()
+
+        if len(guess) != 1 or not guess.isalpha():
+            print("Please enter a letter.")
+            continue
+
+        if guess in guessed_letters:
+            print(f"\"{guess}\" was already guessed.")
+            continue
+
+        guessed_letters.add(guess)
+
+        if guess in answer:
+            for i in range(len(answer)):
+                if answer[i] == guess:
+                    hint[i] = answer[i]
+        else:
+            wrong_guesses += 1
+
+        if "_" not in hint:
+            display_man(wrong_guesses)
+            display_answer(answer)
+            print("YOU WIN!!")
+            is_running = False
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+        if wrong_guesses >= 6:
+            display_man(wrong_guesses)
+            display_answer(answer)
+            print("YOU LOSE!!")
+            print(f"The word was: {answer.upper()}")
+            break
 
+if __name__ == "__main__":
+    main()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
